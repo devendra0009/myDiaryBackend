@@ -2,28 +2,28 @@
 //to agr authentication successfull hoti hai to hme us user k coresponding vale notes show krne hai
 //so maybe notes ko bhi connect krna pdega specific user se ,let's see
 
-const express = require("express");
-const fetchUser = require("../middleware/fetchUser");
-const Notes = require("../models/Notes");
-const { body, validationResult } = require("express-validator");
+const express = require('express');
+const fetchUser = require('../middleware/fetchUser');
+const Notes = require('../models/Notes');
+const { body, validationResult } = require('express-validator');
 const router = express.Router();
 
 //Router 1: router to fetch all the notes linked with the given user id
-router.get("/fetchallnotes", fetchUser, async (req, res) => {
+router.get('/fetchallnotes', fetchUser, async (req, res) => {
   const notes = await Notes.find({ user: req.user.id }); //req me hmara user hai bcz in fetchUser hmne req.user export krwaya hai therefore uski id accesible hai
   res.json(notes); //ab mne notes vale array ko res m bhej dia
 });
 
 //Router 2:router to add the note use POST method to add the note linking to the same user who is logged in
 router.post(
-  "/addnote",
+  '/addnote',
   fetchUser, //to get the user id which had logged in and link it with the added note
   [
-    body("title", "Enter the valid title").isLength({ min: 3 }),
-    body("description", "Enter the valid title").isLength({ min: 5 }),
+    body('title', 'Enter the valid title').isLength({ min: 3 }),
+    body('description', 'Enter the valid title').isLength({ min: 5 }),
   ],
   async (req, res) => {
-    // console.log(req.body); //req.body to hm input lege idhr
+    // //  console.log(req.body); //req.body to hm input lege idhr
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -43,15 +43,15 @@ router.post(
       const savedNote = await note.save();
       res.json(savedNote);
     } catch (err) {
-      // console.log(err.message);
-      res.status(500).send("Internal Server error occured!!");
+      // //  console.log(err.message);
+      res.status(500).send('Internal Server error occured!!');
     }
   }
 );
 
 //Router 3: router to update notes, we use PUT method, login required
 
-router.put("/update/:id", fetchUser, async (req, res) => {
+router.put('/update/:id', fetchUser, async (req, res) => {
   //destructure the updated values given to res
   const { title, description, tag } = req.body;
 
@@ -73,12 +73,12 @@ router.put("/update/:id", fetchUser, async (req, res) => {
 
     //check if the note is existing or not
     if (!note) {
-      return res.status(404).send("Note not existing");
+      return res.status(404).send('Note not existing');
     }
 
     //if the note is linked to correct user check
     if (note.user.toString() !== req.user.id) {
-      return res.status(404).send("Not Allowed!!");
+      return res.status(404).send('Not Allowed!!');
     }
 
     note = await Notes.findByIdAndUpdate(
@@ -88,16 +88,15 @@ router.put("/update/:id", fetchUser, async (req, res) => {
     );
     res.send({ note });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Internal Server error occured!!");
+    //  console.log(err.message);
+    res.status(500).send('Internal Server error occured!!');
   }
 });
 
 //Router 4: router to delete notes, we use DELETE method, login required
 //Similar to update notes
 
-router.delete("/delete/:id", fetchUser, async (req, res) => {
-
+router.delete('/delete/:id', fetchUser, async (req, res) => {
   //here in delete we just have to verify person tryinig to delete it is the same person which had created this note
 
   try {
@@ -106,19 +105,19 @@ router.delete("/delete/:id", fetchUser, async (req, res) => {
 
     //check: if the note is existing or not
     if (!note) {
-      return res.status(404).send("Note not existing");
+      return res.status(404).send('Note not existing');
     }
 
     //check: if the note is linked to correct user
     if (note.user.toString() !== req.user.id) {
-      return res.status(404).send("Not Allowed!!");
+      return res.status(404).send('Not Allowed!!');
     }
 
     note = await Notes.findByIdAndDelete(req.params.id);
-    res.send({ Success: "Note has been deleted", note: note });
+    res.send({ Success: 'Note has been deleted', note: note });
   } catch (err) {
-    // console.log(err.message);
-    res.status(500).send("Internal Server error occured!!");
+    // //  console.log(err.message);
+    res.status(500).send('Internal Server error occured!!');
   }
 });
 

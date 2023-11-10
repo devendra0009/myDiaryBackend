@@ -6,7 +6,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createUser = async (req, res) => {
-  // console.log(reqJWT_SECRET = "5JSD@$4".body);
+  // //  console.log(reqJWT_SECRET = "5JSD@$4".body);
   let success = false;
 
   try {
@@ -39,13 +39,13 @@ const createUser = async (req, res) => {
     success = true;
     res.json({ success, authToken });
   } catch (err) {
-    console.log(err.message);
+    // //  console.log(err.message);
     res.status(500).send('Some error occured');
   }
 };
 
 const loginUser = async (req, res) => {
-  // console.log(req.body);
+  // //  console.log(req.body);
 
   let success = false;
 
@@ -53,6 +53,7 @@ const loginUser = async (req, res) => {
   try {
     //finding if the user with this email already exist or not??
     let user = await User.findOne({ email }); //using es6 just write email it will automatically assign it the user's email value
+    // console.log(user);
     if (!user) {
       return res
         .status(400)
@@ -79,7 +80,7 @@ const loginUser = async (req, res) => {
     success = true;
     res.json({ success, authToken });
   } catch (err) {
-    console.log(err.message);
+    // //  console.log(err.message);
     res.status(500).send('Internal Server error occured!!');
   }
 };
