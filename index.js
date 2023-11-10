@@ -4,8 +4,13 @@ const notesRouter = require('./routes/notes.js');
 const userRouter = require('./routes/users.js');
 const cors = require('cors');
 const express = require('express');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
-const port = 5000;
+
+const port = process.env.PORT;
 
 connectToMongo(); //to connecct to our mongodb database
 
